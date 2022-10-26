@@ -1,44 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="apple-touch-icon" href="icon.png" />
-    <meta
-      name="apple-mobile-web-app-title"
-      content="<%= htmlWebpackPlugin.options.appName %>"
-    />
+    <meta name="apple-mobile-web-app-title" content="<%= htmlWebpackPlugin.options.appName %>" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta
-      name="apple-mobile-web-app-status-bar-style"
-      content="black-translucent"
-    />
-    <meta
-      name="viewport"
-      content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=0, minimal-ui, viewport-fit=cover"
-    />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport"
+        content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=0, minimal-ui, viewport-fit=cover" />
     <title>Zelda 2 Rando Mapper</title>
     <style>
-      body {
-        margin: 0;
-        padding: 0;
-        overflow-x: hidden;
-        overflow-y: hidden;
-        background: lightgray;
-      }
-      .fullscreen-centered {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-      }
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            overflow-y: hidden;
+            background: lightgray;
+        }
+
+        .fullscreen-centered {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #menu {
+            display: flex;
+            flex-direction: row;
+            position: absolute;
+            top: 0;
+            width: 100vw;
+            background-color: black;
+            color: white;
+        }
+
+        #menu ul {
+            list-style: none;
+            display: flex;
+            flex-direction: row;
+            flex: 1;
+            flex-basis: 100%;
+            gap: 20px;
+        }
+
+        #menu img {
+            width: 64px;
+            height: 64px;
+            border: 5px solid white;
+        }
+
+        #menu img::selection { 
+            background: transparent; 
+        }
+
+        #menu li {
+            cursor: pointer;
+        }
+
+        .selected img {
+            border: 5px solid rgb(0, 110, 255) !important;
+        }
     </style>
-  </head>
-  <body>
+</head>
+
+<body>
     <div id="game" class="fullscreen-centered">
-      <canvas id="canvas"></canvas>
+        <canvas id="canvas"></canvas>
     </div>
     <%= htmlWebpackPlugin.options.body %>
-  </body>
+</body>
+
 </html>

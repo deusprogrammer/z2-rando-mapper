@@ -20,6 +20,14 @@ import handyglove from './assets/handyglove.png';
 import fairy from './assets/fairy.png';
 import fairyhandyglove from './assets/fairy-handyglove.png';
 
+import horsehead from './assets/horsehead.png';
+import helmethead from './assets/helmethead.png';
+import rebo from './assets/rebo.png';
+import karrock from './assets/karrock.png';
+import gooma from './assets/gooma.png';
+import barba from './assets/barba.png';
+import thunderbird from './assets/thunderbird.png';
+
 import raft from './assets/raft.png';
 
 import { Point } from 'pixi.js';
@@ -46,13 +54,23 @@ const requirementMap : any = {
     demon: [null]
 }
 
+const bossMap : any = [
+    null,
+    horsehead.src,
+    helmethead.src,
+    rebo.src,
+    karrock.src,
+    gooma.src,
+    barba.src,
+    thunderbird.src
+]
+
 const App: React.FC<{ mouseState: MouseState, mapItems: Array<MapItem>, mode: string, onMapItemChange: Function, onMapItemClick: Function }> = ({ mouseState, mapItems, mode, onMapItemChange, onMapItemClick }) => {
     const [selectedMapItem, setSelectedMapItem] = useState<number>(-1);
 
     const onMousePress = (index : number) => {
-        if (mode === "select") {
-            console.log(mapItems[index].type);
-            console.log(requirementMap[mapItems[index].type][mapItems[index].requirement % requirementMap[mapItems[index].type].length]);
+        console.log("MODE: " + mode);
+        if (mode !== "move") {
             onMapItemClick(index);
             return;
         }
@@ -61,41 +79,49 @@ const App: React.FC<{ mouseState: MouseState, mapItems: Array<MapItem>, mode: st
     }
 
     const onMouseRelease = (index : number) => {
-        if (mode === "select") {
+        if (mode !== "move") {
             return;
         }
 
         setSelectedMapItem(-1);
-        onMapItemChange(index, mouseState.x, mouseState.y);
+        onMapItemChange(index, mouseState.x - 16, mouseState.y - 16);
     }
 
     return (
         <>
-            {mapItems.map(({ type, x: itemX, y: itemY, requirement }: MapItem, index: number) =>
-                <React.Fragment key={`sprite-${index}`} >
+            {mapItems.map(({ type, x: itemX, y: itemY, requirement, boss }: MapItem, index: number) => {
+                return (<React.Fragment key={`sprite-${index}`} >
                     <Sprite 
                         pointerdown={() => {onMousePress(index)}} 
                         pointerup={() => {onMouseRelease(index)}}
                         image={itemMap[type]} 
-                        x={(mode === "move" && index === selectedMapItem) ? mouseState.x : itemX} 
-                        y={(mode === "move" && index === selectedMapItem) ? mouseState.y : itemY} 
-                        scale={new Point(2.5, 2.5)}
+                        x={(mode === "move" && index === selectedMapItem) ? mouseState.x - 16 : itemX} 
+                        y={(mode === "move" && index === selectedMapItem) ? mouseState.y - 16 : itemY} 
+                        scale={new Point(3, 3)}
                         interactive={true} />
                     { requirementMap[type][requirement % requirementMap[type].length] !== null ?
                         <Sprite 
                             image={requirementMap[type][requirement % requirementMap[type].length]} 
-                            x={(mode === "move" && index === selectedMapItem) ? mouseState.x - 32 : itemX - 32} 
-                            y={(mode === "move" && index === selectedMapItem) ? mouseState.y - 32 : itemY - 32} 
+                            x={(mode === "move" && index === selectedMapItem) ? mouseState.x - 48 : itemX - 32} 
+                            y={(mode === "move" && index === selectedMapItem) ? mouseState.y - 48 : itemY - 32} 
                             scale={new Point(2.0, 2.0)} /> : null
                     }
-                </React.Fragment>
+                    { bossMap[boss % bossMap.length] !== null && type === "palace" ?
+                        <Sprite 
+                            image={bossMap[boss % bossMap.length]} 
+                            x={(mode === "move" && index === selectedMapItem) ? mouseState.x + 32 : itemX + 32 + 16} 
+                            y={(mode === "move" && index === selectedMapItem) ? mouseState.y - 32 - 16 : itemY - 32} 
+                            scale={new Point(2.0, 2.0)} /> : null
+                    }
+                </React.Fragment>)
+                }
             )}
-            {!['select', 'move'].includes(mode) ?
+            {!['select', 'select-b', 'move'].includes(mode) ?
                 <Sprite 
                     image={itemMap[mode]} 
-                    x={mouseState.x} 
-                    y={mouseState.y} 
-                    scale={new Point(2.5, 2.5)} /> : null
+                    x={mouseState.x - 16} 
+                    y={mouseState.y - 16} 
+                    scale={new Point(3, 3)} /> : null
             }
         </>
     );
