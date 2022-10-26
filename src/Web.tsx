@@ -3,13 +3,10 @@ import { AutoResizeStage } from 'components/AutoResizeStage'
 import App from 'App'
 
 import { Provider } from 'react-redux'
-import { configureStore } from 'store/configureStore'
 
-const store = configureStore();
+const modes =   ["select",  "move", "palace", "city1", "city2", "city3", "boulder", "demon", "bridge", "cave"];
 
-const modes = ["select", "move", "palace", "city1", "city2", "city3", "boulder", "demon", "bridge", "cave"];
-
-const cursors = ["default", "move", "none", "none", "none", "none", "none", "none" ];
+const cursors = ["default", "move", "none",   "none",  "none",  "none",  "none",    "none",  "none",   "none"];
 
 export const Web = () => {
     const [mode, setMode] = useState(0);
@@ -57,16 +54,14 @@ export const Web = () => {
     }
 
     return (
-        <div style={{ cursor: cursors[mode % modes.length] }} onMouseMove={onMouseMove} onClick={() => { onMouseClick() }} onContextMenu={(e) => { e.preventDefault(); onRightMouseClick(); }}>
+        <div style={{ cursor: cursors[mode % cursors.length] }} onMouseMove={onMouseMove} onClick={() => { onMouseClick() }} onContextMenu={(e) => { e.preventDefault(); onRightMouseClick(); }}>
             <AutoResizeStage>
-                <Provider store={store}>
-                    <App 
-                        mouseState={mouseState} 
-                        mapItems={mapItems} 
-                        mode={modes[mode % modes.length]} 
-                        onMapItemChange={(index : number, x : number, y : number) => {onMapItemChange(index, x, y)}}
-                        onMapItemClick={(index: number) => {onMapItemClick(index)}} />
-                </Provider>
+                <App 
+                    mouseState={mouseState} 
+                    mapItems={mapItems} 
+                    mode={modes[mode % modes.length]} 
+                    onMapItemChange={(index : number, x : number, y : number) => {onMapItemChange(index, x, y)}}
+                    onMapItemClick={(index: number) => {onMapItemClick(index)}} />
             </AutoResizeStage>
         </div>
     )
