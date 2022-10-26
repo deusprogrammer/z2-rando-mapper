@@ -15,15 +15,6 @@
     "start": "webpack-dev-server --config config/webpack.web.dev.js",
     "prod": "webpack --config config/webpack.web.prod.js -p"
   },
-  "lint-staged": {
-    "src/**/*.test.{ts,tsx}": [
-      "jest --config=config/jest.config.js"
-    ],
-    "src/**/*.{ts,tsx}": [
-      "yarn lint",
-      "git add"
-    ]
-  },
   "dependencies": {
     "@inlet/react-pixi": "^1.1.2",
     "lodash.debounce": "^4.0.8",
@@ -36,7 +27,6 @@
     "redux-solve": "^0.2.1"
   },
   "devDependencies": {
-    "//": "mixin-deep & set-value are added only to solve security issues.",
     "@babel/core": "^7.6.4",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/plugin-proposal-decorators": "^7.6.0",

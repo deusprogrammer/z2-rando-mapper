@@ -5,7 +5,7 @@ import { getSizeProps } from 'config/size'
 import { useWindowSize } from 'hooks/useWindowSize'
 
 export const AutoResizeStage: FunctionComponent = ({ children }) => {
-  const size = useWindowSize()
+  const size = useWindowSize(window.innerWidth, window.innerHeight)
   const sizeProps = getSizeProps(size)
 
   return (

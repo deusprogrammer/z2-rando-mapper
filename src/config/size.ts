@@ -42,5 +42,5 @@ export const getSizeProps = ({
     scale: new Point(stageScale, stageScale),
     position: new Point(0, ((viewportHeight - designHeight) / 2) * stageScale),
   }
-  return { canvas, renderer, stage }
+  return { canvas: {width, height}, renderer: {width, height}, stage: {scale: new Point(1, 1), position: new Point(0, 0)} }
 }
