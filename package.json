@@ -1,13 +1,8 @@
 {
-  "name": "react-pixi-starter",
+  "name": "z2-rando-mapper",
   "version": "1.0.0",
   "description": "",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/smith-chris/react-pixi-starter"
-  },
-  "author": "Krzysztof Kowalski",
-  "license": "MIT",
+  "author": "Michael C Main",
   "scripts": {
     "test": "jest --watch --config=config/jest.config.js",
     "lint": "eslint 'src/**/*.{ts,tsx}' --fix",

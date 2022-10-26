@@ -1,7 +1,8 @@
 type MapItem = {
     type: string,
     x: number,
-    y: number
+    y: number,
+    requirement: number
 }
 
 type MouseState = {
