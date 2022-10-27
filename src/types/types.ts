@@ -11,3 +11,10 @@ type MouseState = {
     y: number,
     buttons: Object
 }
+
+type LandMass = {
+    top: number,
+    left: number,
+    bottom: number,
+    right: number
+}

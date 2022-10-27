@@ -28,6 +28,8 @@ import gooma from './assets/gooma.png';
 import barba from './assets/barba.png';
 import thunderbird from './assets/thunderbird.png';
 
+import land from './assets/green.png';
+
 import raft from './assets/raft.png';
 
 import { Point } from 'pixi.js';
@@ -65,11 +67,10 @@ const bossMap : any = [
     thunderbird.src
 ]
 
-const App: React.FC<{ mouseState: MouseState, mapItems: Array<MapItem>, mode: string, onMapItemChange: Function, onMapItemClick: Function }> = ({ mouseState, mapItems, mode, onMapItemChange, onMapItemClick }) => {
+const App: React.FC<{ mouseState: MouseState, mapItems: Array<MapItem>, landMasses: Array<LandMass>, newLand: LandMass | null, mode: string, onMapItemChange: Function, onMapItemClick: Function }> = ({ mouseState, mapItems, landMasses, newLand, mode, onMapItemChange, onMapItemClick }) => {
     const [selectedMapItem, setSelectedMapItem] = useState<number>(-1);
 
     const onMousePress = (index : number) => {
-        console.log("MODE: " + mode);
         if (mode !== "move") {
             onMapItemClick(index);
             return;
@@ -89,6 +90,25 @@ const App: React.FC<{ mouseState: MouseState, mapItems: Array<MapItem>, mode: st
 
     return (
         <>
+            {landMasses.map(({top, left, bottom, right}: LandMass, index) => {
+                return (
+                    <Sprite 
+                        key={`landmass-${index}`}
+                        image={land.src} 
+                        x={Math.min(left, right)} 
+                        y={Math.min(top, bottom)} 
+                        width={Math.abs(right - left)} 
+                        height={Math.abs(bottom - top)} /> 
+                )
+            })}
+            {newLand ? 
+                <Sprite 
+                    image={land.src} 
+                    x={Math.min(newLand.left, newLand.right)} 
+                    y={Math.min(newLand.top, newLand.bottom)} 
+                    width={Math.abs(newLand.right - newLand.left)} 
+                    height={Math.abs(newLand.bottom - newLand.top)} /> : null
+            }
             {mapItems.map(({ type, x: itemX, y: itemY, requirement, boss }: MapItem, index: number) => {
                 return (<React.Fragment key={`sprite-${index}`} >
                     <Sprite 
@@ -116,7 +136,7 @@ const App: React.FC<{ mouseState: MouseState, mapItems: Array<MapItem>, mode: st
                 </React.Fragment>)
                 }
             )}
-            {!['select', 'select-b', 'move'].includes(mode) ?
+            {!['select', 'select-b', 'move', 'land'].includes(mode) ?
                 <Sprite 
                     image={itemMap[mode]} 
                     x={mouseState.x - 16} 

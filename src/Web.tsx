@@ -15,9 +15,11 @@ import demon from './assets/demon.png';
 import boulder from './assets/boulder.png';
 import bridge from './assets/bridge.png';
 
-const modes =   ["select", "select-b",  "move", "palace", "city1", "city2", "city3", "boulder", "demon", "bridge", "cave"];
+import land from './assets/green.png';
 
-const cursors = ["default", "pointer", "move", "none",   "none",  "none",  "none",  "none",    "none",  "none",   "none"];
+const modes =   ["select", "select-b",  "move", "land",      "palace", "city1", "city2", "city3", "boulder", "demon", "bridge", "cave"];
+
+const cursors = ["default", "pointer",  "move", "crosshair", "none",   "none",  "none",  "none",  "none",    "none",  "none",   "none"];
 
 export const Web = () => {
     const [mode, setMode] = useState(0);
@@ -29,8 +31,14 @@ export const Web = () => {
     });
 
     const [mapItems, setMapItems] = useState<Array<MapItem>>([]);
+    const [landMasses, setLandMasses] = useState<Array<LandMass>>([]);
+    const [newLand, setNewLand] = useState<LandMass | null>(null);
 
-    const onMouseMove = ({ pageX: x, pageY: y, buttons }: { pageX: number, pageY: number, buttons: Object }) => {
+    const onMouseMove = ({ pageX: x, pageY: y, buttons }: MouseEvent<HTMLDivElement>) => {
+        if (newLand && buttons === 1 && mode % modes.length === 3) {
+            setNewLand({...newLand, bottom: y, right: x});
+        }
+
         setMouseState({
             x,
             y,
@@ -39,7 +47,13 @@ export const Web = () => {
     };
 
     const onMouseClick = () => {
-        if (mode%modes.length <= 2) {
+        if (mode % modes.length === 3) {
+            let updated = {left: mouseState.x, top: mouseState.y, right: mouseState.x, bottom: mouseState.y};
+            setNewLand(updated);
+            return;
+        }
+
+        if (mode % modes.length <= 3) {
             return;
         }
 
@@ -47,7 +61,20 @@ export const Web = () => {
         setMapItems([...mapItems, newItem]);
     }
 
-    const onRightMouseClick = () => {
+    const onMouseDown = () => {
+        if (mode % modes.length === 3) {
+            let created = {left: mouseState.x, top: mouseState.y, right: mouseState.x, bottom: mouseState.y};
+            setNewLand(created);
+            return;
+        }
+    }
+
+    const onMouseUp = () => {
+        if (newLand) {
+            let created = {...newLand};
+            setNewLand(null);
+            setLandMasses([...landMasses, created]);
+        }
     }
 
     const onMapItemChange = (index : number, x : number, y : number) => {
@@ -88,27 +115,36 @@ export const Web = () => {
     }
 
     return (
-        <div style={{ cursor: cursors[mode % cursors.length] }} onMouseMove={onMouseMove} onClick={() => { onMouseClick() }} onWheel={(e) => {onMouseWheel(e);}} onContextMenu={(e) => { e.preventDefault(); onRightMouseClick(); }}>
+        <div 
+            style={{ cursor: cursors[mode % cursors.length] }} 
+            onMouseMove={onMouseMove} 
+            onClick={() => { onMouseClick() }} 
+            onMouseDown={() => { onMouseDown() }} 
+            onMouseUp={() => { onMouseUp() }}
+            onWheel={(e) => { onMouseWheel(e) }} >
             <div id="menu">
                 <h2>Zelda 2 Rando Mapper</h2>
                 <ul>
                     <li className={modes[mode % modes.length] === "select" ? "selected" : ""} onClick={(e) => {onMenuClick(0, e)}}><img src={select.src} title="Click on map items to add requirements"/></li>
                     <li className={modes[mode % modes.length] === "select-b" ? "selected" : ""} onClick={(e) => {onMenuClick(1, e)}}><img src={pointer.src} title="Click on palaces to set boss" /></li>
                     <li className={modes[mode % modes.length] === "move" ? "selected" : ""} onClick={(e) => {onMenuClick(2, e)}}><img src={move.src} title="Click and drag map items to move them" /></li>
-                    <li className={modes[mode % modes.length] === "palace" ? "selected" : ""} onClick={(e) => {onMenuClick(3, e)}}><img src={palace.src} /></li>
-                    <li className={modes[mode % modes.length] === "city1" ? "selected" : ""} onClick={(e) => {onMenuClick(4, e)}}><img src={city1.src} /></li>
-                    <li className={modes[mode % modes.length] === "city2" ? "selected" : ""} onClick={(e) => {onMenuClick(5, e)}}><img src={city2.src} /></li>
-                    <li className={modes[mode % modes.length] === "city3" ? "selected" : ""} onClick={(e) => {onMenuClick(6, e)}}><img src={city3.src} /></li>
-                    <li className={modes[mode % modes.length] === "boulder" ? "selected" : ""} onClick={(e) => {onMenuClick(7, e)}}><img src={boulder.src} /></li>
-                    <li className={modes[mode % modes.length] === "demon" ? "selected" : ""} onClick={(e) => {onMenuClick(8, e)}}><img src={demon.src} /></li>
-                    <li className={modes[mode % modes.length] === "bridge" ? "selected" : ""} onClick={(e) => {onMenuClick(9, e)}}><img src={bridge.src} /></li>
-                    <li className={modes[mode % modes.length] === "cave" ? "selected" : ""} onClick={(e) => {onMenuClick(10, e)}}><img src={cave.src} /></li>
+                    <li className={modes[mode % modes.length] === "land" ? "selected" : ""} onClick={(e) => {onMenuClick(3, e)}}><img src={land.src} title="Click and drag to draw land" /></li>
+                    <li className={modes[mode % modes.length] === "palace" ? "selected" : ""} onClick={(e) => {onMenuClick(4, e)}}><img src={palace.src} /></li>
+                    <li className={modes[mode % modes.length] === "city1" ? "selected" : ""} onClick={(e) => {onMenuClick(5, e)}}><img src={city1.src} /></li>
+                    <li className={modes[mode % modes.length] === "city2" ? "selected" : ""} onClick={(e) => {onMenuClick(6, e)}}><img src={city2.src} /></li>
+                    <li className={modes[mode % modes.length] === "city3" ? "selected" : ""} onClick={(e) => {onMenuClick(7, e)}}><img src={city3.src} /></li>
+                    <li className={modes[mode % modes.length] === "boulder" ? "selected" : ""} onClick={(e) => {onMenuClick(8, e)}}><img src={boulder.src} /></li>
+                    <li className={modes[mode % modes.length] === "demon" ? "selected" : ""} onClick={(e) => {onMenuClick(9, e)}}><img src={demon.src} /></li>
+                    <li className={modes[mode % modes.length] === "bridge" ? "selected" : ""} onClick={(e) => {onMenuClick(10, e)}}><img src={bridge.src} /></li>
+                    <li className={modes[mode % modes.length] === "cave" ? "selected" : ""} onClick={(e) => {onMenuClick(11, e)}}><img src={cave.src} /></li>
                 </ul>
             </div>
             <AutoResizeStage>
                 <App 
                     mouseState={mouseState} 
                     mapItems={mapItems} 
+                    newLand={newLand}
+                    landMasses={landMasses}
                     mode={modes[mode % modes.length]} 
                     onMapItemChange={(index : number, x : number, y : number) => {onMapItemChange(index, x, y)}}
                     onMapItemClick={(index: number) => {onMapItemClick(index)}} />
