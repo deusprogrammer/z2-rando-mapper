@@ -41,6 +41,8 @@ import c9 from './assets/9.png';
 import ca from './assets/a.png';
 import cb from './assets/b.png';
 
+import land from './assets/green.png';
+
 import raft from './assets/raft.png';
 
 import { Point } from 'pixi.js';
@@ -72,7 +74,7 @@ const bossMap : any = {
     cave: [ null, c0.src, c1.src, c2.src, c3.src, c4.src, c5.src, c6.src, c7.src, c8.src, c9.src, ca.src, cb.src]
 }
 
-const App: React.FC<{ mouseState: MouseState, mapItems: Array<MapItem>, mode: string, onMapItemChange: Function, onMapItemClick: Function }> = ({ mouseState, mapItems, mode, onMapItemChange, onMapItemClick }) => {
+const App: React.FC<{ mouseState: MouseState, mapItems: Array<MapItem>, landMasses: Array<LandMass>, newLand: LandMass | null, mode: string, onMapItemChange: Function, onMapItemClick: Function }> = ({ mouseState, mapItems, landMasses, newLand, mode, onMapItemChange, onMapItemClick }) => {
     const [selectedMapItem, setSelectedMapItem] = useState<number>(-1);
 
     const onMousePress = (index : number) => {
@@ -95,6 +97,25 @@ const App: React.FC<{ mouseState: MouseState, mapItems: Array<MapItem>, mode: st
 
     return (
         <>
+            {landMasses.map(({top, left, bottom, right}: LandMass, index) => {
+                return (
+                    <Sprite 
+                        key={`landmass-${index}`}
+                        image={land.src} 
+                        x={Math.min(left, right)} 
+                        y={Math.min(top, bottom)} 
+                        width={Math.abs(right - left)} 
+                        height={Math.abs(bottom - top)} /> 
+                )
+            })}
+            {newLand ? 
+                <Sprite 
+                    image={land.src} 
+                    x={Math.min(newLand.left, newLand.right)} 
+                    y={Math.min(newLand.top, newLand.bottom)} 
+                    width={Math.abs(newLand.right - newLand.left)} 
+                    height={Math.abs(newLand.bottom - newLand.top)} /> : null
+            }
             {mapItems.map(({ type, x: itemX, y: itemY, requirement, boss }: MapItem, index: number) => {
                 return (<React.Fragment key={`sprite-${index}`} >
                     <Sprite 
@@ -112,7 +133,7 @@ const App: React.FC<{ mouseState: MouseState, mapItems: Array<MapItem>, mode: st
                             y={(mode === "move" && index === selectedMapItem) ? mouseState.y - 48 : itemY - 32} 
                             scale={new Point(2.0, 2.0)} /> : null
                     }
-                    { bossMap[type][boss % bossMap[type].length] !== null && ["cave", "palace"].includes(type) ?
+                    { ["cave", "palace"].includes(type) && bossMap[type][boss % bossMap[type].length] !== null ?
                         <Sprite 
                             image={bossMap[type][boss % bossMap[type].length]} 
                             x={(mode === "move" && index === selectedMapItem) ? mouseState.x + 32 : itemX + 32 + 16} 
@@ -122,7 +143,7 @@ const App: React.FC<{ mouseState: MouseState, mapItems: Array<MapItem>, mode: st
                 </React.Fragment>)
                 }
             )}
-            {!['select', 'select-b', 'move'].includes(mode) ?
+            {!['select', 'select-b', 'move', 'land'].includes(mode) ?
                 <Sprite 
                     image={itemMap[mode]} 
                     x={mouseState.x - 16} 
