@@ -39,7 +39,7 @@ export const Web = () => {
     };
 
     const onMouseClick = () => {
-        if (mode%modes.length <= 2) {
+        if (mode % modes.length <= 2) {
             return;
         }
 

@@ -28,6 +28,19 @@ import gooma from './assets/gooma.png';
 import barba from './assets/barba.png';
 import thunderbird from './assets/thunderbird.png';
 
+import c0 from './assets/0.png';
+import c1 from './assets/1.png';
+import c2 from './assets/2.png';
+import c3 from './assets/3.png';
+import c4 from './assets/4.png';
+import c5 from './assets/5.png';
+import c6 from './assets/6.png';
+import c7 from './assets/7.png';
+import c8 from './assets/8.png';
+import c9 from './assets/9.png';
+import ca from './assets/a.png';
+import cb from './assets/b.png';
+
 import raft from './assets/raft.png';
 
 import { Point } from 'pixi.js';
@@ -54,22 +67,15 @@ const requirementMap : any = {
     demon: [null]
 }
 
-const bossMap : any = [
-    null,
-    horsehead.src,
-    helmethead.src,
-    rebo.src,
-    karrock.src,
-    gooma.src,
-    barba.src,
-    thunderbird.src
-]
+const bossMap : any = {
+    palace: [ null, horsehead.src, helmethead.src, rebo.src, karrock.src, gooma.src, barba.src, thunderbird.src],
+    cave: [ null, c0.src, c1.src, c2.src, c3.src, c4.src, c5.src, c6.src, c7.src, c8.src, c9.src, ca.src, cb.src]
+}
 
 const App: React.FC<{ mouseState: MouseState, mapItems: Array<MapItem>, mode: string, onMapItemChange: Function, onMapItemClick: Function }> = ({ mouseState, mapItems, mode, onMapItemChange, onMapItemClick }) => {
     const [selectedMapItem, setSelectedMapItem] = useState<number>(-1);
 
     const onMousePress = (index : number) => {
-        console.log("MODE: " + mode);
         if (mode !== "move") {
             onMapItemClick(index);
             return;
@@ -106,9 +112,9 @@ const App: React.FC<{ mouseState: MouseState, mapItems: Array<MapItem>, mode: st
                             y={(mode === "move" && index === selectedMapItem) ? mouseState.y - 48 : itemY - 32} 
                             scale={new Point(2.0, 2.0)} /> : null
                     }
-                    { bossMap[boss % bossMap.length] !== null && type === "palace" ?
+                    { bossMap[type][boss % bossMap[type].length] !== null && ["cave", "palace"].includes(type) ?
                         <Sprite 
-                            image={bossMap[boss % bossMap.length]} 
+                            image={bossMap[type][boss % bossMap[type].length]} 
                             x={(mode === "move" && index === selectedMapItem) ? mouseState.x + 32 : itemX + 32 + 16} 
                             y={(mode === "move" && index === selectedMapItem) ? mouseState.y - 32 - 16 : itemY - 32} 
                             scale={new Point(2.0, 2.0)} /> : null
